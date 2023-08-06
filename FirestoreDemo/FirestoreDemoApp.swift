@@ -21,8 +21,30 @@ struct FirestoreDemoApp: App {
         //readData()
         //readAllDocs()
         //watchForChangesOnCollection()
-        getTodaysReservations()
+        //getTodaysReservations()
+        useCompositeQuery()
+    }
+    
+    func useCompositeQuery() {
+        let db = Firestore.firestore()
+        let reservations = db.collection("reservations")
         
+        let query = reservations
+            .whereField("name", in: ["Chuck", "Steve", "Susan"])
+            .whereField("people", isLessThan: 17)
+        
+        query.getDocuments { querySnapshot, error in
+            if let error = error {
+                print(error)
+            } else if let querySnapshot = querySnapshot {
+                //cool code goes here
+                for doc in querySnapshot.documents {
+                    print(doc.data())
+                }
+            } else {
+                print("No data found")
+            }
+        }
     }
     
     
